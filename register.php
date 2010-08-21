@@ -2,10 +2,21 @@
 
 include __DIR__ . "/_helper.php";
 
+$opts = new Regitra\Util\Getopt();
+$options = $opts->process($argv);
+
+foreach (array('name', 'surname', 'code', 'examid') as $option)
+{
+    if (!isset($options[$option]))
+    {
+        die('Please supply --' . $option);
+    }
+}
+
 $person = new \Regitra\Register\Person();
-$person->setName('Juozas', 'Kaziukenas');
-$person->setPersonCode('38904061453');
-$person->setTheoryExamId('2546681');
+$person->setName($options['name'], $options['surname']);
+$person->setPersonCode($options['code']);
+$person->setTheoryExamId($options['examid']);
 
 $run = new \Regitra\Runner();
 

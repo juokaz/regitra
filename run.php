@@ -5,14 +5,12 @@ include __DIR__ . "/_helper.php";
 $opts = new Regitra\Util\Getopt();
 $options = $opts->process($argv);
 
-if (!isset($options['city']))
+foreach (array('city', 'category') as $option)
 {
-    die('Please supply city');
-}
-
-if (!isset($options['category']))
-{
-    die('Please supply category');
+    if (!isset($options[$option]))
+    {
+        die('Please supply --' . $option);
+    }
 }
 
 $run = new \Regitra\Runner();
@@ -42,11 +40,13 @@ while (true)
         print PHP_EOL;
         print '*** Time: ' . $slot->getDate() . PHP_EOL;
         print '*** Available places now: ' . $slot->getPlaces() . PHP_EOL;
-        
+
+        /*
         $twitter = new \Regitra\Util\Twitter();
         $twitter->setUser('juokazdev', 'juozasjuozas');
         $twitter->sendDirectMessage('juokaz', '' . $slot->getDate() . ' / available places: ' . $slot->getPlaces());
-
+        */
+        
         $slot_ = $slot;
     }
 
