@@ -120,6 +120,11 @@ class Runner
         return false;
     }
 
+    /**
+     * Get ip
+     *
+     * @return string
+     */
     public function _getIp()
     {
         // @todo

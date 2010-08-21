@@ -45,16 +45,31 @@ class Slot extends \Regitra\Slot
         parent::__construct($year, $month, $day, $hour, $minute);
     }
 
+    /**
+     * Get city
+     *
+     * @return string
+     */
     public function getCity()
     {
         return $this->_city;
     }
 
+    /**
+     * Get category
+     *
+     * @return string
+     */
     public function getCategory()
     {
         return $this->_category;
     }
 
+    /**
+     * Gears
+     *
+     * @return string
+     */
     public function getGears()
     {
         return $this->_gears;

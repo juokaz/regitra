@@ -18,11 +18,6 @@ class Scrapper
      */
     protected $_cookies = '';
 
-    public function __construct()
-    {
-        
-    }
-
     /**
      * Set init Url
      *

@@ -44,6 +44,14 @@ class Params
         'C1' => 'C',
     );
 
+    /**
+     * Validate params
+     *
+     * @param string $city
+     * @param string $category
+     * @param string $gears
+     * @return array
+     */
     public static function validate($city, $category, $gears = self::GEARS_MANUAL)
     {
         if (!\array_key_exists($city, self::$_cities))
