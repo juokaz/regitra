@@ -45,24 +45,23 @@ class Register
         $data = $xpath->query('//tr[contains(td/text(),"Egzamino data, laikas:")]/td[position()=2]');
         \preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/', $data->item(0)->nodeValue, $matches);
 
-        $slot = new Slot($city, $category, $gears, $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
+        $slot = new Slot(null, $city, $category, $gears, $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
 
         return $slot;
     }
 
     /**
-     * Get slot id
+     * Get slots
      *
-     * @param \Regitra\Processor\Slot $slot
      * @param Scrapper\DataObject $data
-     * @return string
+     * @return array
      */
-    public function getSlotId(\Regitra\Processor\Slot $slot, Scrapper\DataObject $data)
+    public function getSlots(Scrapper\DataObject $data)
     {
+        $result = array();
+
         if (\strlen($data) == 0)
-        {
-            throw new \Regitra\Exception('Empty document');
-        }
+            return $result;
 
         $html = $data->getDomDocument();
 
@@ -101,23 +100,36 @@ class Register
             {
                 continue;
             }
-            
+
             list($year, $month, $day) = explode('.', $date);
             list($hour, $minute) = explode(':', $slots[$i - 2]);
 
-            $slot_ = new \Regitra\Processor\Slot(/* dummy places */ 1, $year, $month, $day, $hour, $minute);
+            $a = $xpath->query('./a', $item_);
+            $href = $a->item(0)->getAttribute('href');
 
-            if ($slot->getRawDate() == $slot_->getRawDate())
-            {
-                $a = $xpath->query('./a', $item_);
-                $href = $a->item(0)->getAttribute('href');
+            \preg_match('/PAKEISTI\(\'(\d+)\'/', $href, $matches);
 
-                \preg_match('/PAKEISTI\(\'(\d+)\'\)/', $href, $matches);
-
-                return $matches[1];
-            }
+            $result[] = new Slot($matches[1], '', '', '', $year, $month, $day, $hour);
         }
 
-        throw new \Regitra\Exception('Slot cannot be found');
+        return $result;
+    }
+
+    /**
+     * Get slot
+     *
+     * @param Scrapper\DataObject $data
+     * @return string
+     */
+    public function getSlot(Scrapper\DataObject $data)
+    {
+        $slots = $this->getSlots($data);
+
+        if (count($slots) == 0)
+        {
+            throw new Exception('No slots available');
+        }
+
+        return $slots[0];
     }
 }

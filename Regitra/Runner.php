@@ -67,46 +67,47 @@ class Runner
      */
     public function registerPerson(Register\Person $person)
     {
+        $register = new Register\Register();
+
+        $scrapper = $this->_getScrapper();
+
         if (!isset($this->_current_slot))
         {
-            $register = new Register\Register();
-
-            $scrapper = $this->_getScrapper();
-
-            $data = $scrapper->getData('https://212.59.5.68/nveis/INTERV/INT_Header_Inf.php', array('Asm_kodas' => $person->getPersonCode()));
+            $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header_Inf.php', array(
+                'Action' => 'IESKOTI',
+                'Asm_kodas' => $person->getPersonCode()
+            ));
 
             $this->_current_slot = $register->getCurrentSlot($data);
         }
 
         $params = Runner\Params::validate($this->_current_slot->getCity(), $this->_current_slot->getCategory(), $this->_current_slot->getGears());
 
-        $slot = $this->getFirstAvailableSlot($params['city'], $params['category'], $params['gears']);
+        $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header.php', array(
+            'Action' => 'PAKEISTI_LAIKA',
+            'Asm_kodas' => $person->getPersonCode(),
+            'EGZ_TIPAS' => 'P',
+            'IDi' => '',
+            'Kategorija' => $params['category'],
+            'PRASYMO_NR' => $person->getTheoryExamId(),
+            'PRASYMO_NR_P' => $person->getTheoryExamId(),
+            'P_deze' => $params['gears'],
+            'Padal' => $params['city'],
+            'Padalinys_P' => '',
+            'TPadalinys' => '',
+            'nrows' => '1'));
+
+        $slot = $register->getSlot($data);
 
         if ($this->_current_slot->getRawDate() > $slot->getRawDate())
         {
-            $data = $scrapper->getData('https://212.59.5.68/nveis/INTERV/INT_Header.php', array(
-                'Action' => 'PAKEISTI_LAIKA',
-                'Asm_kodas' => $person->getPersonCode(),
-                'EGZ_TIPAS' => 'P',
-                'IDi' => '',
-                'Kategorija' => $params['category'],
-                'PRASYMO_NR' => $person->getTheoryExamId(),
-                'PRASYMO_NR_P' => $person->getTheoryExamId(),
-                'P_deze' => $params['gears'],
-                'Padal' => $params['city'],
-                'Padalinys_P' => '',
-                'TPadalinys' => '',
-                'nrows' => '1'));
-
-            $slotid = $register->getSlotId($slot, $data);
-
             $url = sprintf(
-                'https://212.59.5.68/nveis/INTERV/INT_App.php?Vardas=&Pavarde=&Asm_kodas=%s&Padalinys=%s' .
+                'https://www.eregitra.lt/viesa/interv/INT_App.php?Vardas=&Pavarde=&Asm_kodas=%s&Padalinys=%s' .
                 '&SYSDATE=%s&Prasymo_nr=&Kategorija=%s&P_deze=%s&Fraze=&ip=%s&PRASYMO_NR=%s&Action=Issaugoti_Pakeisti' .
                 '&GrafikoID=%s&Prakt_Date=%s&Prakt_Time=%s',
 
                 $person->getPersonCode(), $params['city'], date('Y-m-d\AH:i:s'), $params['category'], $params['gears'],
-                $this->_getIp(), $person->getTheoryExamId(), $slotid, $slot->getDate('Y-m-d'), $slot->getDate('H:i')
+                $this->_getIp(), $person->getTheoryExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
             );
 
             $scrapper->getData($url);
@@ -143,7 +144,7 @@ class Runner
         if (!$scrapper)
         {
             $scrapper = new \Regitra\Scrapper\Scrapper();
-            $scrapper->setInitUrl('https://212.59.5.68/nveis/INTERV/Index.php');
+            $scrapper->setInitUrl('https://www.eregitra.lt/viesa/interv/Index.php');
             $scrapper->setCookiesPath(tempnam(null, 'Regitra'));
         }
 

@@ -26,8 +26,16 @@ class Slot extends \Regitra\Slot
     protected $_gears;
 
     /**
+     * Id
+     *
+     * @var int
+     */
+    protected $_id;
+
+    /**
      * Slot object
      *
+     * @param int $id
      * @param string $city
      * @param string $category
      * @param string $gears
@@ -37,8 +45,9 @@ class Slot extends \Regitra\Slot
      * @param int $hour
      * @param int $minute
      */
-    public function __construct($city, $category, $gears, $year, $month, $day, $hour, $minute = 0)
+    public function __construct($id, $city, $category, $gears, $year, $month, $day, $hour, $minute = 0)
     {
+        $this->_id = $id;
         $this->_city = $city;
         $this->_category = $category;
         $this->_gears = $gears;
@@ -73,5 +82,15 @@ class Slot extends \Regitra\Slot
     public function getGears()
     {
         return $this->_gears;
+    }
+
+    /**
+     * Id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->_id;
     }
 }
