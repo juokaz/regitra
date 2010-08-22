@@ -127,7 +127,7 @@ class Register
 
         if (count($slots) == 0)
         {
-            throw new Exception('No slots available');
+            throw new \Regitra\Exception('No slots available');
         }
 
         return $slots[0];
