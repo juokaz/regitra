@@ -4,13 +4,13 @@ namespace Regitra\Register;
 
 class Person
 {
-    protected $_person_code = null;
+    protected $_personCode = null;
 
     protected $_name = null;
 
     protected $_surname = null;
 
-    protected $_theory_exam_id = null;
+    protected $_theoryExamId = null;
 
     /**
      * Set person code
@@ -19,7 +19,7 @@ class Person
      */
     public function setPersonCode($code)
     {
-        $this->_person_code = $code;
+        $this->_personCode = $code;
     }
 
     /**
@@ -29,7 +29,7 @@ class Person
      */
     public function getPersonCode()
     {
-        return $this->_person_code;
+        return $this->_personCode;
     }
 
     /**
@@ -71,7 +71,7 @@ class Person
      */
     public function setTheoryExamId($id)
     {
-        $this->_theory_exam_id = $id;
+        $this->_theoryExamId = $id;
     }
 
     /**
@@ -81,6 +81,6 @@ class Person
      */
     public function getTheoryExamId()
     {
-        return $this->_theory_exam_id;
+        return $this->_theoryExamId;
     }
 }

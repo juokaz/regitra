@@ -14,7 +14,7 @@ class Runner
      *
      * @var Regitra\Register\Slot
      */
-    private $_current_slot = null;
+    private $_currentSlot = null;
 
     /**
      * Get slots
@@ -28,7 +28,7 @@ class Runner
     {
         $params = Runner\Params::validate($city, $category, $gears);
 
-        $scrapper = $this->_getScrapper();
+        $scrapper = $this->getScrapper();
 
         $document = $scrapper->getData(sprintf('https://212.59.5.68/nveis/INTERV/INT_GRAFIKAS_VIEW.php?Padalinys=%s&Kategorija=%s&P_deze=%s&Action=',
                 $params['city'], $params['category'], $params['gears']
@@ -69,19 +69,19 @@ class Runner
     {
         $register = new Register\Register();
 
-        $scrapper = $this->_getScrapper();
+        $scrapper = $this->getScrapper();
 
-        if (!isset($this->_current_slot))
+        if (!isset($this->_currentSlot))
         {
             $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header_Inf.php', array(
                 'Action' => 'IESKOTI',
                 'Asm_kodas' => $person->getPersonCode()
             ));
 
-            $this->_current_slot = $register->getCurrentSlot($data);
+            $this->_currentSlot = $register->getCurrentSlot($data);
         }
 
-        $params = Runner\Params::validate($this->_current_slot->getCity(), $this->_current_slot->getCategory(), $this->_current_slot->getGears());
+        $params = Runner\Params::validate($this->_currentSlot->getCity(), $this->_currentSlot->getCategory(), $this->_currentSlot->getGears());
 
         $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header.php', array(
             'Action' => 'PAKEISTI_LAIKA',
@@ -99,7 +99,7 @@ class Runner
 
         $slot = $register->getSlot($data);
 
-        if ($this->_current_slot->getRawDate() > $slot->getRawDate())
+        if ($this->_currentSlot->getRawDate() > $slot->getRawDate())
         {
             $url = sprintf(
                 'https://www.eregitra.lt/viesa/interv/INT_App.php?Vardas=&Pavarde=&Asm_kodas=%s&Padalinys=%s' .
@@ -107,13 +107,13 @@ class Runner
                 '&GrafikoID=%s&Prakt_Date=%s&Prakt_Time=%s',
 
                 $person->getPersonCode(), $params['city'], date('Y-m-d\AH:i:s'), $params['category'], $params['gears'],
-                $this->_getIp(), $person->getTheoryExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
+                $this->getIp(), $person->getTheoryExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
             );
 
             $scrapper->getData($url);
 
             // reset current slot
-            $this->_current_slot = null;
+            $this->_currentSlot = null;
 
             return $slot;
         }
@@ -126,7 +126,7 @@ class Runner
      *
      * @return string
      */
-    private function _getIp()
+    private function getIp()
     {
         return \trim(\file_get_contents('http://whatismyip.org/'));
     }
@@ -136,7 +136,7 @@ class Runner
      *
      * @return \Regitra\Scrapper\Scrapper
      */
-    private function _getScrapper()
+    private function getScrapper()
     {
         static $scrapper;
 

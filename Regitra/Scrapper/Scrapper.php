@@ -66,7 +66,7 @@ class Scrapper
         {
             try
             {
-                $this->_getHtml($this->_initUrl);
+                $this->getHtml($this->_initUrl);
             }
             catch (\Regitra\Exception $e)
             {
@@ -78,7 +78,7 @@ class Scrapper
 
         try
         {
-            $html = $this->_getHtml($url, $data);
+            $html = $this->getHtml($url, $data);
         }
         catch (\Regitra\Exception $e)
         {
@@ -94,7 +94,7 @@ class Scrapper
      * @param string $url
      * @return string
      */
-    protected function _getHtml($url, $post = false)
+    protected function getHtml($url, $post = false)
     {
         $curl = curl_init();
 
@@ -129,7 +129,7 @@ class Scrapper
         if (is_array($post))
         {
             curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $this->_getPostFields($post));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $this->getPostFields($post));
         }
 
         $html = curl_exec($curl); // execute the curl command
@@ -150,7 +150,7 @@ class Scrapper
      * @param array $data
      * @return string
      */
-    private function _getPostFields ($data) {
+    private function getPostFields ($data) {
 
         $return = array();
 

@@ -4,7 +4,13 @@ namespace Regitra\Util;
 
 class Getopt
 {
-    public function process($args)
+    /**
+     * Process options
+     *
+     * @param array $args
+     * @return array
+     */
+    public function process(array $args)
     {
         if (empty($args)) {
             return array();
