@@ -126,10 +126,9 @@ class Runner
      *
      * @return string
      */
-    public function _getIp()
+    private function _getIp()
     {
-        // @todo
-        return '78.60.231.20';
+        return \trim(\file_get_contents('http://whatismyip.org/'));
     }
 
     /**
