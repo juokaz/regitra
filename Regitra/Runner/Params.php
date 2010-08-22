@@ -58,7 +58,24 @@ class Params
         {
             if (!\in_array($city, self::$_cities))
             {
-                throw new \Regitra\Exception('Invalid city "' . $city . '"');
+                if (\strpos($city, 'filialas') !== false)
+                {
+                    $city = \str_replace(' filialas', '', $city);
+
+                    foreach (self::$_cities as $cityId => $cityName)
+                    {
+                        if (\strpos($city, \substr($cityName, 0, -2)) === 0)
+                        {
+                            $city = $cityId;
+                            break;
+                        }
+                    }
+                }
+
+                if (!\array_key_exists($city, self::$_cities))
+                {
+                    throw new \Regitra\Exception('Invalid city "' . $city . '"');
+                }
             }
             else
             {

@@ -18,16 +18,34 @@ class Register
             throw new \Regitra\Exception ('Empty document');
         }
 
-        \preg_match("/PAKEISTIPR\('(\w{1})','(\w{1})',document.forms\[0\]\.PRASYMO_NR_P\.value,'(\w{2})'/", (string) $data, $params);
-
         $html = $data->getDomDocument();
 
         $xpath = new \DOMXPath($html);
 
+        \preg_match("/PAKEISTIPR\('(\w{1})','(\w{1})',document.forms\[0\]\.PRASYMO_NR_P\.value,'(\w{2})'/", (string) $data, $params);
+
+        if (count($params) != 4)
+        {
+            $data = $xpath->query('//tr[contains(td/text(),"Egzamino vieta:")]/td[position()=2]/text()');
+            $city = trim($data->item(0)->nodeValue);
+
+            $data = $xpath->query('//tr[contains(td/text(),"Kategorija")]/td[position()=2]/text()');
+            $category = trim($data->item(0)->nodeValue);
+
+            $data = $xpath->query('//tr[contains(td/text(),"Pavar")]/td[position()=2]/text()');
+            $gears = strpos(trim($data->item(0)->nodeValue), 'mechanin') === 0 ? \Regitra\Runner\Params::GEARS_MANUAL : \Regitra\Runner\Params::GEARS_AUTOMATIC;
+        }
+        else
+        {
+            $city = $params[3];
+            $category = $params[2];
+            $gears = $params[1];
+        }
+
         $data = $xpath->query('//tr[contains(td/text(),"Egzamino data, laikas:")]/td[position()=2]');
         \preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/', $data->item(0)->nodeValue, $matches);
 
-        $slot = new Slot($params[3], $params[2], $params[1], $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
+        $slot = new Slot($city, $category, $gears, $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
 
         return $slot;
     }
