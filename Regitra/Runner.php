@@ -138,9 +138,14 @@ class Runner
      */
     private function _getScrapper()
     {
-        $scrapper = new \Regitra\Scrapper\Scrapper();
-        $scrapper->setInitUrl('https://212.59.5.68/nveis/INTERV/Index.php');
-        $scrapper->setCookiesPath(tempnam(null, 'Regitra'));
+        static $scrapper;
+
+        if (!$scrapper)
+        {
+            $scrapper = new \Regitra\Scrapper\Scrapper();
+            $scrapper->setInitUrl('https://212.59.5.68/nveis/INTERV/Index.php');
+            $scrapper->setCookiesPath(tempnam(null, 'Regitra'));
+        }
 
         return $scrapper;
     }

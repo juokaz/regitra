@@ -12,6 +12,13 @@ class Scrapper
     protected $_initUrl = '';
 
     /**
+     * How often init url must be fetched
+     *
+     * @var int
+     */
+    protected $_initTimeout = 1;
+
+    /**
      * Cookies
      *
      * @var string
@@ -52,13 +59,21 @@ class Scrapper
      */
     public function getData($url, $data = array())
     {
-        try
+        static $last;
+
+        // only init once in a while
+        if ($last + $this->_initTimeout * 60 < time())
         {
-            $this->_getHtml($this->_initUrl);
-        }
-        catch (\Regitra\Exception $e)
-        {
-            throw new \Regitra\Exception('Initialisation page can not be loaded');
+            try
+            {
+                $this->_getHtml($this->_initUrl);
+            }
+            catch (\Regitra\Exception $e)
+            {
+                throw new \Regitra\Exception('Initialisation page can not be loaded');
+            }
+            
+            $last = time();
         }
 
         try
