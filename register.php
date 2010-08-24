@@ -16,7 +16,7 @@ foreach (array('name', 'surname', 'code', 'examid') as $option)
 $person = new \Regitra\Register\Person();
 $person->setName($options['name'], $options['surname']);
 $person->setPersonCode($options['code']);
-$person->setTheoryExamId($options['examid']);
+$person->setExamId($options['examid']);
 
 $run = new \Regitra\Runner();
 

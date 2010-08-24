@@ -10,7 +10,7 @@ class Person
 
     protected $_surname = null;
 
-    protected $_theoryExamId = null;
+    protected $_examId = null;
 
     /**
      * Set person code
@@ -65,13 +65,13 @@ class Person
     }
 
     /**
-     * Set theory exam id
+     * Set exam id
      *
      * @param int $id
      */
-    public function setTheoryExamId($id)
+    public function setExamId($id)
     {
-        $this->_theoryExamId = $id;
+        $this->_examId = $id;
     }
 
     /**
@@ -79,8 +79,8 @@ class Person
      *
      * @return id
      */
-    public function getTheoryExamId()
+    public function getExamId()
     {
-        return $this->_theoryExamId;
+        return $this->_examId;
     }
 }

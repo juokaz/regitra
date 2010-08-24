@@ -89,8 +89,8 @@ class Runner
             'EGZ_TIPAS' => 'P',
             'IDi' => '',
             'Kategorija' => $params['category'],
-            'PRASYMO_NR' => $person->getTheoryExamId(),
-            'PRASYMO_NR_P' => $person->getTheoryExamId(),
+            'PRASYMO_NR' => $person->getExamId(),
+            'PRASYMO_NR_P' => $person->getExamId(),
             'P_deze' => $params['gears'],
             'Padal' => $params['city'],
             'Padalinys_P' => '',
@@ -107,7 +107,7 @@ class Runner
                 '&GrafikoID=%s&Prakt_Date=%s&Prakt_Time=%s',
 
                 $person->getPersonCode(), $params['city'], date('Y-m-d\AH:i:s'), $params['category'], $params['gears'],
-                $this->getIp(), $person->getTheoryExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
+                $this->getIp(), $person->getExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
             );
 
             $scrapper->getData($url);
