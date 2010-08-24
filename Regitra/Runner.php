@@ -107,7 +107,7 @@ class Runner
                 '&GrafikoID=%s&Prakt_Date=%s&Prakt_Time=%s',
 
                 $person->getPersonCode(), $params['city'], date('Y-m-d\AH:i:s'), $params['category'], $params['gears'],
-                $this->getIp(), $person->getExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
+                Util\Http::getIp(), $person->getExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
             );
 
             $scrapper->getData($url);
@@ -119,16 +119,6 @@ class Runner
         }
 
         return false;
-    }
-
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    private function getIp()
-    {
-        return \trim(\file_get_contents('http://whatismyip.org/'));
     }
 
     /**
