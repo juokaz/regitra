@@ -41,9 +41,7 @@ while (true)
     catch (\Regitra\Exception $exception)
     {
         print PHP_EOL;
-        print 'Error!' . PHP_EOL;
-        print $exception->getMessage();
-        die();
+        print 'Error (' . $exception->getMessage() . ')' . PHP_EOL;
     }
 
     sleep(isset($options['refresh']) ? $options['refresh'] : 5);
