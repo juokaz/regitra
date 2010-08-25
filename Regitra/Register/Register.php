@@ -56,7 +56,7 @@ class Register
      * @param Scrapper\DataObject $data
      * @return array
      */
-    public function getSlots(Scrapper\DataObject $data)
+    public function extractSlots(Scrapper\DataObject $data)
     {
         $result = array();
 
@@ -113,23 +113,5 @@ class Register
         }
 
         return $result;
-    }
-
-    /**
-     * Get slot
-     *
-     * @param Scrapper\DataObject $data
-     * @return string
-     */
-    public function getSlot(Scrapper\DataObject $data)
-    {
-        $slots = $this->getSlots($data);
-
-        if (count($slots) == 0)
-        {
-            throw new \Regitra\Exception('No slots available');
-        }
-
-        return $slots[0];
     }
 }

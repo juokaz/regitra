@@ -97,7 +97,15 @@ class Runner
             'TPadalinys' => '',
             'nrows' => '1'));
 
-        $slot = $register->getSlot($data);
+        $slots = $register->extractSlots($data);
+
+        if (count($slots) == 0)
+        {
+            throw new Exception('No slots available');
+        }
+
+        // get first slot
+        $slot = $slots[0];
 
         if ($this->_currentSlot->getRawDate() > $slot->getRawDate())
         {
