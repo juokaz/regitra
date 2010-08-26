@@ -10,9 +10,9 @@ class Register
      * Get current user slot
      *
      * @param Scrapper\DataObject $data
-     * @return Slot
+     * @return Registration
      */
-    public function getCurrentSlot(Scrapper\DataObject $data)
+    public function getRegistrationInfo(Scrapper\DataObject $data)
     {
         if (\strlen($data) == 0) {
             throw new \Regitra\Exception ('Empty document');
@@ -45,18 +45,19 @@ class Register
         $data = $xpath->query('//tr[contains(td/text(),"Egzamino data, laikas:")]/td[position()=2]');
         \preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/', $data->item(0)->nodeValue, $matches);
 
-        $slot = new Slot(null, $city, $category, $gears, $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
+        $slot = new Slot(null, $matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
 
-        return $slot;
+        return new Registration($slot, $city, $category, $gears);
     }
 
     /**
      * Get slots
      *
      * @param Scrapper\DataObject $data
+     * @param Registration $registration
      * @return array
      */
-    public function extractSlots(Scrapper\DataObject $data)
+    public function extractSlots(Scrapper\DataObject $data, Registration $registration = null)
     {
         $result = array();
 
@@ -109,7 +110,15 @@ class Register
 
             \preg_match('/PAKEISTI\(\'(\d+)\'/', $href, $matches);
 
-            $result[] = new Slot($matches[1], '', '', '', $year, $month, $day, $hour);
+            $result[] = new Slot($matches[1], $year, $month, $day, $hour);
+        }
+
+        if (isset($registration))
+        {
+            $data = $xpath->query('//input[@name="ip"]/@value');
+            $ip = $data->item(0)->nodeValue;
+
+            $registration->setIp($ip);
         }
 
         return $result;

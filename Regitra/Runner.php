@@ -12,9 +12,9 @@ class Runner
     /**
      * Current user registration slot
      *
-     * @var Regitra\Register\Slot
+     * @var Regitra\Register\Registration
      */
-    private $_currentSlot = null;
+    private $registrationInfo = null;
 
     /**
      * Get slots
@@ -71,17 +71,17 @@ class Runner
 
         $scrapper = $this->getScrapper();
 
-        if (!isset($this->_currentSlot))
+        if (!isset($this->registrationInfo))
         {
             $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header_Inf.php', array(
                 'Action' => 'IESKOTI',
                 'Asm_kodas' => $person->getPersonCode()
             ));
 
-            $this->_currentSlot = $register->getCurrentSlot($data);
+            $this->registrationInfo = $register->getRegistrationInfo($data);
         }
 
-        $params = Runner\Params::validate($this->_currentSlot->getCity(), $this->_currentSlot->getCategory(), $this->_currentSlot->getGears());
+        $params = Runner\Params::validate($this->registrationInfo->getCity(), $this->registrationInfo->getCategory(), $this->registrationInfo->getGears());
 
         $data = $scrapper->getData('https://www.eregitra.lt/viesa/interv/INT_Header.php', array(
             'Action' => 'PAKEISTI_LAIKA',
@@ -97,7 +97,7 @@ class Runner
             'TPadalinys' => '',
             'nrows' => '1'));
 
-        $slots = $register->extractSlots($data);
+        $slots = $register->extractSlots($data, $this->registrationInfo);
 
         if (count($slots) == 0)
         {
@@ -107,7 +107,7 @@ class Runner
         // get first slot
         $slot = $slots[0];
 
-        if ($this->_currentSlot->getRawDate() > $slot->getRawDate())
+        if ($this->registrationInfo->getSlot()->getRawDate() > $slot->getRawDate())
         {
             $url = sprintf(
                 'https://www.eregitra.lt/viesa/interv/INT_App.php?Vardas=&Pavarde=&Asm_kodas=%s&Padalinys=%s' .
@@ -115,13 +115,13 @@ class Runner
                 '&GrafikoID=%s&Prakt_Date=%s&Prakt_Time=%s',
 
                 $person->getPersonCode(), $params['city'], date('Y-m-d\AH:i:s'), $params['category'], $params['gears'],
-                Util\Http::getIp(), $person->getExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
+                $this->registrationInfo->getIp(), $person->getExamId(), $slot->getId(), $slot->getDate('Y-m-d H:i'), null
             );
 
             $scrapper->getData($url);
 
-            // reset current slot
-            $this->_currentSlot = null;
+            // reset current registration info
+            $this->registrationInfo = null;
 
             return $slot;
         }
