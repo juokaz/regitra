@@ -5,7 +5,7 @@ include __DIR__ . "/_helper.php";
 $opts = new Regitra\Util\Getopt();
 $options = $opts->process($argv);
 
-foreach (array('name', 'surname', 'code', 'examid') as $option)
+foreach (array('code', 'examid') as $option)
 {
     if (!isset($options[$option]))
     {
@@ -14,7 +14,6 @@ foreach (array('name', 'surname', 'code', 'examid') as $option)
 }
 
 $person = new \Regitra\Register\Person();
-$person->setName($options['name'], $options['surname']);
 $person->setPersonCode($options['code']);
 $person->setExamId($options['examid']);
 
