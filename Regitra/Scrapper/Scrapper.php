@@ -55,14 +55,15 @@ class Scrapper
      *
      * @param string $url
      * @param array $data
+     * @param boolean $initRequired
      * @return DataObject
      */
-    public function getData($url, $data = array())
+    public function getData($url, $data = array(), $initRequired = true)
     {
         static $last;
 
         // only init once in a while
-        if ($last + $this->_initTimeout * 60 < time())
+        if ($initRequired && $last + $this->_initTimeout * 60 < time())
         {
             try
             {

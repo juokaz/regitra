@@ -6,6 +6,7 @@ use Regitra\Scrapper;
 use Regitra\Processor;
 use Regitra\Register;
 use Regitra\Runner;
+use Regitra\License;
 
 class Runner
 {
@@ -127,6 +128,24 @@ class Runner
         }
 
         return false;
+    }
+
+    /**
+     * Is driving license ready
+     *
+     * @param Register\Person $person
+     * @return boolean
+     */
+    public function isDrivingLicenseReady(Register\Person $person)
+    {
+        $scrapper = $this->getScrapper();
+
+        $data = $scrapper->getData('https://www.eregitra.lt/viesa/vp_paiesk/vp_search.php', array(
+            'ASM_KODAS' => $person->getPersonCode()), false);
+
+        $license = new License\License();
+
+        return $license->isReady($data);
     }
 
     /**
