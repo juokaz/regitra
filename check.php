@@ -38,6 +38,9 @@ while (true)
                     $twitter = new \Regitra\Util\Twitter();
                     $twitter->setUser('juokazdev', 'juozasjuozas');
                     $twitter->sendDirectMessage('juokaz', 'License is ready');
+
+                    // finish checking
+                    die();
                 }
                 break;
             default:
